@@ -1,30 +1,32 @@
 import requests
 import traceback
-import asyncio
 
 CURRENCY_API = "eace0dc0-7665-11ec-9c39-813e50af74bf"
 
-def currencyExchange():
+def currencyExchange(target_currency, currency_to_convert):
     try:
-        URL= f"https://freecurrencyapi.net/api/v2/latest?apikey={CURRENCY_API}&base_currency=CAD"
+        tc = currency_to_convert
+        URL= f"https://freecurrencyapi.net/api/v2/latest?apikey={CURRENCY_API}&base_currency={target_currency}"
 
         r = requests.get(URL)
         data = r.json()
         
+        
         d = data['data']
         keys = list(d.items())
-        print(f"As of the latest currency exchange rate update, 1 CAD is equal to: ")
-        i = 0
+        target = d.get(tc)
+        
+        if target == None:
+            raise Exception("Target currency not valid")
 
-        while i < len(d):
-            k = list(keys[i])
-
-            print(f"{k[1]} {k[0]}")
-            i+=1
-       
+        else:
+            print(f"1 {target_currency} is equal to: {target} {tc}")
+            
 
     except Exception as f:
-        print(f)
-        traceback.print_exc()
+        print("Either your target currency or your currency to convert is NOT A VALID CURRENCY, please check spelling and enter using all capital letters")
+        
 
-currencyExchange()
+target = input("Enter your target currency")
+cc = input("Enter the currency you wish to convert to the target currency")
+currencyExchange(target, cc)
